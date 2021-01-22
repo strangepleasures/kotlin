@@ -243,7 +243,6 @@ class GenerationState private constructor(
         this.moduleName,
         languageVersionSettings,
         useOldManglingSchemeForFunctionsWithInlineClassesInSignatures,
-        IncompatibleClassTrackerImpl(extraJvmDiagnosticsTrace),
         target,
         isIrBackend
     )
