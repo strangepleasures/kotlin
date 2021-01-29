@@ -34,6 +34,7 @@ val shadows by configurations.creating {
 }
 configurations.getByName("compileOnly").extendsFrom(shadows)
 configurations.getByName("testCompile").extendsFrom(shadows)
+configurations.getByName("runtime").isCanBeConsumed = true
 
 dependencies {
     api(kotlinStdlib())

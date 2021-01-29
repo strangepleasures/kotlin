@@ -622,9 +622,11 @@ val ideaPlugin by task<Task> {
 
 tasks {
     named("clean") {
+        val localBuildDir = buildDir
+        val localdistDir = distDir
         doLast {
-            delete("$buildDir/repo")
-            delete(distDir)
+            delete("$localBuildDir/repo")
+            delete(localdistDir)
         }
     }
 
