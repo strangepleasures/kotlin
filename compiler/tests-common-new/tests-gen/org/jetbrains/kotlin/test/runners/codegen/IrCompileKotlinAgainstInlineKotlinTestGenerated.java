@@ -648,6 +648,12 @@ public class IrCompileKotlinAgainstInlineKotlinTestGenerated extends AbstractIrC
             }
 
             @Test
+            @TestMetadata("kt8668_nested.kt")
+            public void testKt8668_nested() throws Exception {
+                runTest("compiler/testData/codegen/boxInline/anonymousObject/twoCapturedReceivers/kt8668_nested.kt");
+            }
+
+            @Test
             @TestMetadata("twoDifferentDispatchReceivers.kt")
             public void testTwoDifferentDispatchReceivers() throws Exception {
                 runTest("compiler/testData/codegen/boxInline/anonymousObject/twoCapturedReceivers/twoDifferentDispatchReceivers.kt");
