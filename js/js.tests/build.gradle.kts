@@ -104,7 +104,7 @@ val currentOsType = run {
         else -> OsName.UNKNOWN
     }
 
-    val osArch = when (System.getProperty("sun.arch.data.model")) {
+    val osArch = when (providers.systemProperty("sun.arch.data.model").forUseAtConfigurationTime().get()) {
         "32" -> OsArch.X86_32
         "64" -> OsArch.X86_64
         else -> OsArch.UNKNOWN
