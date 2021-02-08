@@ -23,6 +23,7 @@ import org.jetbrains.kotlin.builtins.KotlinBuiltIns;
 import org.jetbrains.kotlin.descriptors.*;
 import org.jetbrains.kotlin.descriptors.annotations.Annotations;
 import org.jetbrains.kotlin.name.Name;
+import org.jetbrains.kotlin.resolve.DescriptorEquivalenceForOverrides;
 import org.jetbrains.kotlin.resolve.descriptorUtil.DescriptorUtilsKt;
 import org.jetbrains.kotlin.resolve.scopes.LazyScopeAdapter;
 import org.jetbrains.kotlin.resolve.scopes.MemberScope;
@@ -221,6 +222,12 @@ public abstract class AbstractTypeParameterDescriptor extends DeclarationDescrip
         @Override
         protected KotlinType defaultSupertypeIfEmpty() {
             return ErrorUtils.createErrorType("Cyclic upper bounds");
+        }
+
+        @Override
+        protected boolean isSameClassifier(@NotNull ClassifierDescriptor classifier) {
+            return classifier instanceof TypeParameterDescriptor &&
+                   DescriptorEquivalenceForOverrides.INSTANCE.areEquivalent(getDeclarationDescriptor(), classifier, true, true);
         }
     }
 }
