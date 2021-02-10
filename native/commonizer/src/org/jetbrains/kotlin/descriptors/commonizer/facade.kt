@@ -12,6 +12,7 @@ import org.jetbrains.kotlin.descriptors.commonizer.core.CommonizationVisitor
 import org.jetbrains.kotlin.descriptors.commonizer.mergedtree.*
 import org.jetbrains.kotlin.descriptors.commonizer.mergedtree.CirNode.Companion.dimension
 import org.jetbrains.kotlin.descriptors.commonizer.mergedtree.CirTreeMerger.CirTreeMergeResult
+import org.jetbrains.kotlin.descriptors.commonizer.metadata.CirTreeMergerV2
 import org.jetbrains.kotlin.descriptors.commonizer.metadata.MetadataBuilder
 import org.jetbrains.kotlin.library.SerializedMetadata
 import org.jetbrains.kotlin.storage.LockBasedStorageManager
@@ -49,6 +50,18 @@ private fun mergeAndCommonize(storageManager: StorageManager, parameters: Common
         )
     )
     val mergeResult = CirTreeMerger(storageManager, classifiers, parameters).merge()
+
+    val classifiersV2 = CirKnownClassifiers(
+        commonized = CirCommonizedClassifiers.default(),
+        forwardDeclarations = CirForwardDeclarations.default(),
+        dependeeLibraries = mapOf(
+            // for now, supply only common dependee libraries (ex: Kotlin stdlib)
+            parameters.sharedTarget to CirProvidedClassifiers.fromModules(storageManager) {
+                parameters.dependeeModulesProvider?.loadModules(emptyList())?.values.orEmpty()
+            }
+        )
+    )
+    val mergeResultV2 = CirTreeMergerV2(storageManager, classifiersV2, parameters).merge()
 
     // commonize:
     val mergedTree = mergeResult.root

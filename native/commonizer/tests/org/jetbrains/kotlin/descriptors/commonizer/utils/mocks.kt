@@ -139,7 +139,7 @@ internal val MOCK_CLASSIFIERS = CirKnownClassifiers(
                     isExternal = false
                 )
             },
-            CirEntityId.create("kotlin/Any")
+            ANY_CLASS_ID
         )
 
         override fun classNode(classId: CirEntityId) = MOCK_CLASS_NODE
