@@ -260,7 +260,7 @@ class K2JsIrCompiler : CLICompiler<K2JSCompilerArguments>() {
                 mainArguments = mainCallArguments,
                 generateFullJs = !arguments.irDce,
                 generateDceJs = arguments.irDce,
-                dceMode = DceMode.resolve(arguments.irDceMode),
+                dceRuntimeDiagnostic = DceRuntimeDiagnostic.resolve(arguments.irDceRuntimeDiagnostic),
                 dceDriven = arguments.irDceDriven,
                 multiModule = arguments.irPerModule,
                 relativeRequirePath = true,
@@ -425,10 +425,10 @@ class K2JsIrCompiler : CLICompiler<K2JSCompilerArguments>() {
     }
 }
 
-fun DceMode.Companion.resolve(mode: String): DceMode = when (mode.toLowerCase()) {
-    DCE_MODE_REMOVAL_DECLARATION -> DceMode.REMOVAL_DECLARATION
-    DCE_MODE_LOGGING -> DceMode.LOGGING
-    DCE_MODE_THROWING_EXCEPTION -> DceMode.THROWING_EXCEPTION
+fun DceRuntimeDiagnostic.Companion.resolve(mode: String?): DceRuntimeDiagnostic? = when (mode?.toLowerCase()) {
+    DCE_RUNTIME_DIAGNOSTIC_LOG -> DceRuntimeDiagnostic.LOG
+    DCE_RUNTIME_DIAGNOSTIC_EXCEPTION -> DceRuntimeDiagnostic.EXCEPTION
+    null -> null
     else -> error("Unknown DCE mode '$mode'")
 }
 

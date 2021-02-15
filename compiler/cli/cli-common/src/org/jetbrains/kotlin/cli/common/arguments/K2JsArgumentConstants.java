@@ -29,7 +29,6 @@ public interface K2JsArgumentConstants {
     String SOURCE_MAP_SOURCE_CONTENT_NEVER = "never";
     String SOURCE_MAP_SOURCE_CONTENT_INLINING = "inlining";
 
-    String DCE_MODE_REMOVAL_DECLARATION = "removal-declaration";
-    String DCE_MODE_LOGGING = "logging";
-    String DCE_MODE_THROWING_EXCEPTION = "throwing-exception";
+    String DCE_RUNTIME_DIAGNOSTIC_LOG = "log";
+    String DCE_RUNTIME_DIAGNOSTIC_EXCEPTION = "exception";
 }

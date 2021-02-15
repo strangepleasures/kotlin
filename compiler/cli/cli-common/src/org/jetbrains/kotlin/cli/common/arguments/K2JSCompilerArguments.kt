@@ -126,11 +126,11 @@ class K2JSCompilerArguments : CommonCompilerArguments() {
     var irDce: Boolean by FreezableVar(false)
 
     @Argument(
-        value = "-Xir-dce-mode",
-        valueDescription = "{removal-declaration|logging|throwing-exception}",
-        description = "Operation which necessary to do with unreachable declaration"
+        value = "-Xir-dce-runtime-diagnostic",
+        valueDescription = "{$DCE_RUNTIME_DIAGNOSTIC_LOG|$DCE_RUNTIME_DIAGNOSTIC_EXCEPTION}",
+        description = "Way to provide runtime diagnostic in DCE instead of removing declarations"
     )
-    var irDceMode: String by FreezableVar(DCE_MODE_REMOVAL_DECLARATION)
+    var irDceRuntimeDiagnostic: String? by NullableStringFreezableVar(null)
 
     @Argument(value = "-Xir-dce-driven", description = "Perform a more experimental faster dead code elimination")
     var irDceDriven: Boolean by FreezableVar(false)

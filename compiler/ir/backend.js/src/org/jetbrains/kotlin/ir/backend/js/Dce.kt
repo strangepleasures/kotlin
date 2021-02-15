@@ -23,8 +23,7 @@ import org.jetbrains.kotlin.ir.visitors.IrElementVisitorVoid
 import org.jetbrains.kotlin.ir.visitors.acceptChildrenVoid
 import org.jetbrains.kotlin.ir.visitors.acceptVoid
 import org.jetbrains.kotlin.js.config.JSConfigurationKeys
-import org.jetbrains.kotlin.js.config.dceModeToArgumentOfUnreachableMethod
-import org.jetbrains.kotlin.js.config.isNotRemovingDeclaration
+import org.jetbrains.kotlin.js.config.dceRuntimeDiagnosticToArgumentOfUnreachableMethod
 import org.jetbrains.kotlin.js.config.removingBody
 import org.jetbrains.kotlin.utils.addIfNotNull
 import java.util.*
@@ -66,7 +65,7 @@ private fun buildRoots(modules: Iterable<IrModuleFragment>, context: JsIrBackend
 
     rootDeclarations += context.testRoots.values
 
-    if (context.dceMode.isNotRemovingDeclaration()) {
+    if (context.dceRuntimeDiagnostic != null) {
         rootDeclarations += context.intrinsics.jsUnreachableDeclaration.owner
     }
 
@@ -130,27 +129,27 @@ private fun processUselessDeclarations(
 
 private fun IrDeclaration.processUselessDeclaration(context: JsIrBackendContext): List<IrDeclaration>? {
     return when {
-        context.dceMode.isNotRemovingDeclaration() -> {
-            processNonRemoving(context)
+        context.dceRuntimeDiagnostic != null -> {
+            processWithDiagnostic(context)
             return null
         }
         else -> emptyList()
     }
 }
 
-private fun IrDeclaration.processNonRemoving(context: JsIrBackendContext) {
+private fun IrDeclaration.processWithDiagnostic(context: JsIrBackendContext) {
     when (this) {
-        is IrFunction -> processNonRemovingFunction(context)
-        is IrField -> processNonRemovingField()
-        is IrDeclarationContainer -> declarations.forEach { it.processNonRemoving(context) }
+        is IrFunction -> processFunctionWithDiagnostic(context)
+        is IrField -> processFieldWithDiagnostic()
+        is IrDeclarationContainer -> declarations.forEach { it.processWithDiagnostic(context) }
     }
 }
 
-private fun IrFunction.processNonRemovingFunction(context: JsIrBackendContext) {
+private fun IrFunction.processFunctionWithDiagnostic(context: JsIrBackendContext) {
     val jsUnreachableDeclaration = context.intrinsics.jsUnreachableDeclaration
+    val dceRuntimeDiagnostic = context.dceRuntimeDiagnostic
 
-    if (symbol != jsUnreachableDeclaration) {
-        val dceMode = context.dceMode
+    if (symbol != jsUnreachableDeclaration && dceRuntimeDiagnostic != null) {
         val call = JsIrBuilder.buildCall(
             target = jsUnreachableDeclaration,
             type = returnType
@@ -159,11 +158,11 @@ private fun IrFunction.processNonRemovingFunction(context: JsIrBackendContext) {
                 0,
                 JsIrBuilder.buildInt(
                     context.irBuiltIns.intType,
-                    dceMode.dceModeToArgumentOfUnreachableMethod()
+                    dceRuntimeDiagnostic.dceRuntimeDiagnosticToArgumentOfUnreachableMethod()
                 )
             )
         }
-        if (dceMode.removingBody()) {
+        if (dceRuntimeDiagnostic.removingBody()) {
             body = context.irFactory.createBlockBody(
                 UNDEFINED_OFFSET,
                 UNDEFINED_OFFSET
@@ -174,7 +173,7 @@ private fun IrFunction.processNonRemovingFunction(context: JsIrBackendContext) {
     }
 }
 
-private fun IrField.processNonRemovingField() {
+private fun IrField.processFieldWithDiagnostic() {
     if (initializer != null && fqNameWhenAvailable?.asString()?.startsWith("kotlin") == true) {
         initializer = null
     }
