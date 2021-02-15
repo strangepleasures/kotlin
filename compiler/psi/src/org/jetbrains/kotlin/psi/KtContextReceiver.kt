@@ -6,7 +6,7 @@
 package org.jetbrains.kotlin.psi
 
 import com.intellij.lang.ASTNode
-import org.jetbrains.kotlin.KtNodeTypes
+import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
 import org.jetbrains.kotlin.psi.stubs.KotlinPlaceHolderStub
 import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes
 
@@ -18,5 +18,5 @@ class KtContextReceiver : KtElementImplStub<KotlinPlaceHolderStub<KtContextRecei
         return visitor.visitContextReceiver(this, data)
     }
 
-    fun typeReferences(): List<KtTypeReference> = findChildrenByType(KtNodeTypes.TYPE_REFERENCE)
+    fun typeReferences(): List<KtTypeReference> = collectDescendantsOfType(canGoInside = { it !is KtTypeReference })
 }
