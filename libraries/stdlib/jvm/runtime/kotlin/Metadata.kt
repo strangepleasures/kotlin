@@ -34,6 +34,10 @@ public annotation class Metadata(
     /**
      * The version of the bytecode interface (naming conventions, signatures) of the class file annotated with this annotation.
      */
+    @Deprecated(
+        "Bytecode version had no significant use in Kotlin metadata and it will be removed in a future version.",
+        level = DeprecationLevel.WARNING,
+    )
     @get:JvmName("bv")
     val bytecodeVersion: IntArray = [],
     /**
