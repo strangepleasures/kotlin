@@ -26,7 +26,6 @@ fun test() {}
 
 fun isFlagSet(className: String): Boolean {
     val extraInt = Class.forName(className).getAnnotation(Metadata::class.java).extraInt
-    println("### $className -> $extraInt")
     return (extraInt and (1 shl 0)) != 0
 }
 
