@@ -20,41 +20,53 @@ import java.lang.Character.isUpperCase
 import java.nio.file.Files
 import java.nio.file.Path
 
+val dependsOnKotlinPlugin = arrayOf(
+    ":kotlin-allopen",
+    ":kotlin-noarg",
+    ":kotlin-sam-with-receiver",
+    ":kotlin-android-extensions",
+    ":kotlin-parcelize-compiler",
+    ":kotlin-build-common",
+    ":kotlin-compiler-embeddable",
+    ":native:kotlin-native-utils",
+    ":kotlin-util-klib",
+    ":kotlin-util-io",
+    ":kotlin-compiler-runner",
+    ":kotlin-daemon-embeddable",
+    ":kotlin-daemon-client",
+    ":kotlin-gradle-plugin-api",
+    ":kotlin-gradle-plugin",
+    ":kotlin-gradle-plugin-model",
+    ":kotlin-reflect",
+    ":kotlin-annotation-processing-gradle",
+    ":kotlin-test",
+    ":kotlin-gradle-subplugin-example",
+    ":kotlin-stdlib-common",
+    ":kotlin-stdlib",
+    ":kotlin-stdlib-jdk8",
+    ":kotlin-stdlib-js",
+    ":examples:annotation-processor-example",
+    ":kotlin-script-runtime",
+    ":kotlin-scripting-common",
+    ":kotlin-scripting-jvm",
+    ":kotlin-scripting-compiler-embeddable",
+    ":kotlin-scripting-compiler-impl-embeddable",
+    ":kotlin-test-js-runner",
+    ":native:kotlin-klib-commonizer-embeddable"
+)
+
 fun Task.dependsOnKotlinPluginInstall() {
-    dependsOn(
-        ":kotlin-allopen:install",
-        ":kotlin-noarg:install",
-        ":kotlin-sam-with-receiver:install",
-        ":kotlin-android-extensions:install",
-        ":kotlin-parcelize-compiler:install",
-        ":kotlin-build-common:install",
-        ":kotlin-compiler-embeddable:install",
-        ":native:kotlin-native-utils:install",
-        ":kotlin-util-klib:install",
-        ":kotlin-util-io:install",
-        ":kotlin-compiler-runner:install",
-        ":kotlin-daemon-embeddable:install",
-        ":kotlin-daemon-client:install",
-        ":kotlin-gradle-plugin-api:install",
-        ":kotlin-gradle-plugin:install",
-        ":kotlin-gradle-plugin-model:install",
-        ":kotlin-reflect:install",
-        ":kotlin-annotation-processing-gradle:install",
-        ":kotlin-test:install",
-        ":kotlin-gradle-subplugin-example:install",
-        ":kotlin-stdlib-common:install",
-        ":kotlin-stdlib:install",
-        ":kotlin-stdlib-jdk8:install",
-        ":kotlin-stdlib-js:install",
-        ":examples:annotation-processor-example:install",
-        ":kotlin-script-runtime:install",
-        ":kotlin-scripting-common:install",
-        ":kotlin-scripting-jvm:install",
-        ":kotlin-scripting-compiler-embeddable:install",
-        ":kotlin-scripting-compiler-impl-embeddable:install",
-        ":kotlin-test-js-runner:install",
-        ":native:kotlin-klib-commonizer-embeddable:install"
-    )
+    dependsOnKotlinPlugin.forEach {
+        dependsOn("${it}:install")
+    }
+}
+
+fun Task.dependsOnKotlinPluginPublish() {
+    dependsOnKotlinPlugin.forEach {
+        project.rootProject.tasks.findByPath("${it}:publish")?.let { task ->
+            dependsOn(task)
+        }
+    }
 }
 
 fun Project.projectTest(
@@ -159,7 +171,7 @@ fun Project.projectTest(
     doFirst {
         val teamcity = rootProject.findProperty("teamcity") as? Map<*, *>
         val systemTempRoot =
-            // TC by default doesn't switch `teamcity.build.tempDir` to 'java.io.tmpdir' so it could cause to wasted disk space
+        // TC by default doesn't switch `teamcity.build.tempDir` to 'java.io.tmpdir' so it could cause to wasted disk space
             // Should be fixed soon on Teamcity side
             (teamcity?.get("teamcity.build.tempDir") as? String)
                 ?: System.getProperty("java.io.tmpdir")
