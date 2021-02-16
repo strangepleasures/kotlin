@@ -12,9 +12,10 @@ package kotlin.js
  * - 1 - throwing exception
  */
 internal fun unreachableDeclaration(arg: Int) {
+    val message = "Unreachable declaration"
     when (arg) {
-        0 -> console.error("Unreachable declaration")
-        1 -> throw JsError("Unreachable declaration")
+        0 -> console.asDynamic().trace(message)
+        1 -> throw JsError(message)
     }
 }
 
