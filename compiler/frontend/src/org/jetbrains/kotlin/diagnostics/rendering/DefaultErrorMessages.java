@@ -139,6 +139,7 @@ public class DefaultErrorMessages {
         MAP.put(REPEATED_ANNOTATION, "This annotation is not repeatable");
         MAP.put(REPEATED_ANNOTATION_WARNING, "This annotation is not repeatable");
         MAP.put(NON_SOURCE_ANNOTATION_ON_INLINED_LAMBDA_EXPRESSION, "The lambda expression here is an inlined argument so this annotation cannot be stored anywhere");
+        MAP.put(SEALED_INAPPLICABLE_TO_INTERFACE, "Sealed interfaces are supported only since version 1.5.");
 
         MAP.put(INAPPLICABLE_TARGET_ON_PROPERTY, "''@{0}:'' annotations could be applied only to property declarations", TO_STRING);
         MAP.put(INAPPLICABLE_TARGET_PROPERTY_IMMUTABLE, "''@{0}:'' annotations could be applied only to mutable properties", TO_STRING);
