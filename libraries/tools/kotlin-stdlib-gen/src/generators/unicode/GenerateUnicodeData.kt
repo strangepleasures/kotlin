@@ -58,23 +58,17 @@ fun main(args: Array<String>) {
             val jsIrGeneratedDir = baseDir.resolve("libraries/stdlib/js-ir/src/generated/")
             addRangesGenerators(jsIrGeneratedDir, KotlinTarget.JS_IR)
 
+            val nativeGeneratedDir = baseDir.resolve("kotlin-native/runtime/src/main/kotlin/generated/")
+            addRangesGenerators(nativeGeneratedDir, KotlinTarget.Native)
+
             // For debugging. To see the file content
             val unicodeDataFile = baseDir.resolve("libraries/tools/kotlin-stdlib-gen/src/generators/unicode/UnicodeData.txt")
             unicodeDataFile.writeText(unicodeDataLines.joinToString(separator = "\n"))
         }
-        2 -> {
-            val (targetName, targetDir) = args
-
-            val target = KotlinTarget.values.singleOrNull { it.name.equals(targetName, ignoreCase = true) }
-                ?: error("Invalid target: $targetName")
-
-            addRangesGenerators(File(targetDir), target)
-        }
         else -> {
             println(
                 """Parameters:
-    <kotlin-base-dir> - generates UnicodeData.txt sources for js and js-ir targets using paths derived from specified base path
-    <UnicodeData.txt-path> <target> <target-dir> - generates UnicodeData.txt sources for the specified target in the specified target directory
+    <kotlin-base-dir> - generates UnicodeData.txt sources for js, js-ir and native targets using paths derived from specified base path
 """
             )
             exitProcess(1)
